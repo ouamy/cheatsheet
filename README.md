@@ -80,12 +80,9 @@ tmux kill-session -t minebot
 
 ---
 
-## File Transfer
+## File Transfer (SCP)
 
 ```bash
-# From VM to local machine
-scp -i ssh-key-2025-05-10.key -r opc@89.168.51.129:/path/to/remote/folder_or_file /path/to/local/destination
-
-# Backup home folder
-scp -i ssh-key-2025-05-10.key -r opc@89.168.51.129:/home/opc ~/Desktop/afkbot-backup
+# From local machine to VM
+./send_to_vm.sh directory/or/file
 ```
