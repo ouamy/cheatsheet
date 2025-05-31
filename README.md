@@ -1,0 +1,91 @@
+# CheatSheet
+
+## Tools
+
+- **XAMPP** – Local web server (Apache, MySQL, PHP)
+- **VSCode** – Code editor
+- **Git Bash** – Git CLI & Bash terminal
+- **Epson** – Printer drivers/software
+- **Node.js** – JavaScript runtime
+- **Windscribe** – VPN client
+- **Composer** – PHP dependency manager
+- **TightVNC** – Remote desktop server
+- **Steam** – Gaming client
+- **Firefox** – Web browser
+- **uTorrent** – Torrent client
+- **DS4Windows** – DualShock controller support
+- **Caddy** – Fast and secure web server
+- **Ngrok** – Secure tunnel to localhost
+- **Python** – General purpose programming
+- **noVNC** – VNC in browser
+
+---
+
+## Remote Desktop via Browser
+
+### Architecture
+
+- **TightVNC**: VNC server (port `5900`)
+- **Websockify**: Bridges VNC over WebSocket (e.g. `6080`)
+- **noVNC**: HTML5 VNC client
+
+### Commands
+
+```bash
+# Launch Websockify + noVNC from current directory
+python -m websockify --web . 6080 192.168.1.60:5900
+
+# Optional: HTTP server (if needed for serving files)
+python -m http.server 8080
+```
+
+### Access URLs
+
+- Local: [http://192.168.1.60:6080/vnc.html](http://192.168.1.60:6080/vnc.html)
+- Exposed via Ngrok:
+```bash
+ngrok http 6080
+```
+
+---
+
+## VM Notes
+
+### SSH Access
+
+```bash
+ssh -i pooptop.key opc@89.168.51.129
+```
+
+- **Public IP:** `89.168.51.129`
+- **Username:** `opc`
+
+### Tmux
+
+```bash
+tmux new-session -s minebot
+
+# Detach from session
+Ctrl + b, then d
+
+# List sessions
+tmux ls
+
+# Reattach
+tmux attach-session -t minebot
+
+# Kill session
+tmux kill-session -t minebot
+```
+
+---
+
+## File Transfer
+
+```bash
+# From VM to local machine
+scp -i ssh-key-2025-05-10.key -r opc@89.168.51.129:/path/to/remote/folder_or_file /path/to/local/destination
+
+# Backup home folder
+scp -i ssh-key-2025-05-10.key -r opc@89.168.51.129:/home/opc ~/Desktop/afkbot-backup
+```
