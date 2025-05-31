@@ -33,7 +33,7 @@
 
 ```bash
 # Launch Websockify + noVNC from current directory
-python -m websockify --web . 6080 192.168.1.60:5900
+python -m websockify --web . 6080 localhost:5900
 
 # Optional: HTTP server (if needed for serving files)
 python -m http.server 8080
@@ -41,7 +41,7 @@ python -m http.server 8080
 
 ### Access URLs
 
-- Local: [http://192.168.1.60:6080/vnc.html](http://192.168.1.60:6080/vnc.html)
+- Local: [http://localhost/vnc.html](http://localhost:6080/vnc.html)
 - Exposed via Ngrok:
 ```bash
 ngrok http 6080
