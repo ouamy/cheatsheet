@@ -22,7 +22,7 @@ tmux new-session -d -s novnc "cd \$HOME/projects/noVNC && python3 -m websockify 
 tmux new-session -d -s icecast "sudo systemctl start icecast2 && sleep infinity"
 
 # === Start Audio Streaming ===
-tmux new-session -d -s audio_stream 'ffmpeg -f pulse -i RDPSink.monitor -ac 2 -ar 44100 -f mp3 icecast://username:password@localhost:8000/stream'
+tmux new-session -d -s audio_stream 'ffmpeg -f pulse -i RDPSink.monitor -ac 2 -ar 44100 -f mp3 icecast://source:hackme@localhost:8000/stream'
 
 # === Start cloudflared and log output to temp files ===
 ICECAST_LOG="/tmp/cloudflared_icecast.log"
@@ -55,6 +55,9 @@ get_cloudflared_url_from_log() {
     echo "$NAME URL: Not found (timed out)"
 }
 
+# === Get URLs and clean up logs ===
 get_cloudflared_url_from_log "$ICECAST_LOG" "deployed_icecast"
 get_cloudflared_url_from_log "$NOVNC_LOG" "deployed_novnc"
 
+# === Clean up temporary log files ===
+rm -f "$ICECAST_LOG" "$NOVNC_LOG"
