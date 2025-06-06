@@ -92,40 +92,8 @@ tmux kill-session -t minebot
 ## Streaming
 
 ```bash
-# Icecast deployed via Cloudflared
-tmux new-session -s deployed_icecast
-cloudflared tunnel --url http://localhost:8000
-
-# noVNC deployed via Cloudflared
-tmux new-session -s deployed_novnc
-cloudflared tunnel --url http://localhost:6080
-
-# Start Icecast server
-tmux new-session -s icecast
-sudo systemctl start icecast2
-
-# Audio stream mount point
-mkdir stream
-
-# Stream audio via ffmpeg
-ffmpeg -f pulse -i RDPSink.monitor -ac 2 -ar 44100 -f mp3 \
-  icecast://username:password@localhost:8000/stream
-
-# Start noVNC server manually
-tmux new-session -s novnc
-python -m websockify --web . 6080 localhost:5901
-
-# Start TightVNC server
-tmux new-session -s xtightvncserver
-vncserver :1
-
-# VNC startup script
-vim ~/.vnc/xstartup
-
-# Add to xstartup:
-#!/bin/sh
-xrdb $HOME/.Xresources
-startxfce4 &
+# Start live session
+./stream.sh
 
 # Windows path (WSL)
 cd /mnt/c/Users/user0/Desktop
