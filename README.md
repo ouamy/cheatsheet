@@ -92,6 +92,11 @@ tmux kill-session -t minebot
 ## Streaming
 
 ```bash
+sudo visudo
+
+# To the bottom
+user0 ALL=(ALL) NOPASSWD: /bin/systemctl start icecast2
+
 # Start live session
 ./stream.sh
 
