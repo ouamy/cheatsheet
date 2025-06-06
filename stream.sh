@@ -7,16 +7,18 @@ mkdir -p stream
 VNC_STARTUP="$HOME/.vnc/xstartup"
 cat > "$VNC_STARTUP" <<EOF
 #!/bin/sh
-xrdb \$HOME/.Xresources
+xrdb $HOME/.Xresources
 startxfce4 &
+
 EOF
 chmod +x "$VNC_STARTUP"
 
 # === Start TightVNC server ===
-tmux new-session -d -s xtightvncserver "vncserver :1"
+
+tmux new-session -d -s xtightvncserver "vncserver :2"
 
 # === Start noVNC server ===
-tmux new-session -d -s novnc "cd \$HOME/projects/noVNC && python3 -m websockify --web . 6080 localhost:5901"
+tmux new-session -d -s novnc "cd \$HOME/projects/noVNC && python3 -m websockify --web . 6080 localhost:5902"
 
 # === Start Icecast server ===
 tmux new-session -d -s icecast "sudo systemctl start icecast2 && sleep infinity"
@@ -61,3 +63,5 @@ get_cloudflared_url_from_log "$NOVNC_LOG" "deployed_novnc"
 
 # === Clean up temporary log files ===
 rm -f "$ICECAST_LOG" "$NOVNC_LOG"
+vncserver -kill :2 > tmp.txt 2>&1 && vncserver :2 >> tmp.txt 2>&1
+rm -f tmp.txt
