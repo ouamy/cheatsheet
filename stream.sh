@@ -24,32 +24,37 @@ tmux new-session -d -s icecast "sudo systemctl start icecast2 && sleep infinity"
 # === Start Audio Streaming ===
 tmux new-session -d -s audio_stream 'ffmpeg -f pulse -i RDPSink.monitor -ac 2 -ar 44100 -f mp3 icecast://username:password@localhost:8000/stream'
 
-# === Expose Icecast via Cloudflared ===
-tmux new-session -d -s deployed_icecast "cloudflared tunnel --url http://localhost:8000"
+# === Start cloudflared and log output to temp files ===
+ICECAST_LOG="/tmp/cloudflared_icecast.log"
+NOVNC_LOG="/tmp/cloudflared_novnc.log"
 
-# === Expose noVNC via Cloudflared ===
-tmux new-session -d -s deployed_novnc "cloudflared tunnel --url http://localhost:6080"
+tmux new-session -d -s deployed_icecast "cloudflared tunnel --url http://localhost:8000 > $ICECAST_LOG 2>&1"
+tmux new-session -d -s deployed_novnc "cloudflared tunnel --url http://localhost:6080 > $NOVNC_LOG 2>&1"
 
-echo "URLs: "
-
-# === Wait and extract Cloudflare URLs from tmux output ===
+echo "You are now live."
+echo "Waiting for URLs: "
 sleep 5
 
-get_cloudflared_url() {
-    SESSION_NAME="$1"
-    for i in {1..10}; do
-        URL=$(tmux capture-pane -p -t "$SESSION_NAME" | grep -Eo 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' | tail -n 1)
-        if [[ -n "$URL" ]]; then
-            echo "$SESSION_NAME $URL"
-            return
+# === Extract Cloudflare URLs from log files ===
+get_cloudflared_url_from_log() {
+    LOG_FILE="$1"
+    NAME="$2"
+    for i in {1..15}; do
+        if [[ -f "$LOG_FILE" ]]; then
+            URL=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' "$LOG_FILE" | tail -n 1)
+            if [[ -n "$URL" ]]; then
+                if [[ "$NAME" == "deployed_novnc" ]]; then
+                    URL="${URL}/vnc.html"
+                fi
+                echo "$URL"
+                return
+            fi
         fi
         sleep 1
     done
-    echo "$SESSION_NAME URL: Not found (timed out)"
+    echo "$NAME URL: Not found (timed out)"
 }
 
-get_cloudflared_url deployed_icecast
-get_cloudflared_url deployed_novnc
-
-echo "You are now live."
+get_cloudflared_url_from_log "$ICECAST_LOG" "deployed_icecast"
+get_cloudflared_url_from_log "$NOVNC_LOG" "deployed_novnc"
 
