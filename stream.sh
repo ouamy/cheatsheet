@@ -47,8 +47,11 @@ get_cloudflared_url_from_log() {
             if [[ -n "$URL" ]]; then
                 if [[ "$NAME" == "deployed_novnc" ]]; then
                     URL="${URL}/vnc.html"
+                elif [[ "$NAME" == "deployed_icecast" ]]; then
+                    URL="${URL}/stream"
                 fi
                 echo "$URL"
+                echo -n "$URL" | base64
                 return
             fi
         fi
