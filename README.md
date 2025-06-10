@@ -92,6 +92,12 @@ tmux kill-session -t minebot
 ## Streaming
 
 ```bash
+# Desktop env
+sudo apt install xfce4 xfce4-goodies tightvncserver tmux ffmpeg icecast2 pulseaudio python3-websockify -y
+
+# Optional
+sudo apt install python-is-python3 -y
+
 sudo visudo
 
 # To the bottom
