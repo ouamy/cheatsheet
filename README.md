@@ -36,6 +36,11 @@ python -m websockify --web . 6080 localhost:5900
 
 # Optional: HTTP server (if needed for serving files)
 python -m http.server 8080
+
+# Create virtual environment
+python -m venv env
+source env/bin/activate
+deactivate
 ```
 
 ### Access URLs
